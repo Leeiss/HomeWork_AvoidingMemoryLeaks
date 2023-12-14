@@ -1,0 +1,3 @@
+/mnt/c/Users/farra/OneDrive/Рабочий стол/C++ files/CppTeaching/homeWork/08/CMakeFiles/task5.dir
+/mnt/c/Users/farra/OneDrive/Рабочий стол/C++ files/CppTeaching/homeWork/08/CMakeFiles/edit_cache.dir
+/mnt/c/Users/farra/OneDrive/Рабочий стол/C++ files/CppTeaching/homeWork/08/CMakeFiles/rebuild_cache.dir
