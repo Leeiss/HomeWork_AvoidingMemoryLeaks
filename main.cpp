@@ -12,14 +12,14 @@
 template<typename T>
 void value_should_be_deleted_in_this_function(T p_value)
 {
-    assert(p_value);
+    assert(p_value); // проверка на то чтобы переданный указатель не был нулевым
     if constexpr (std::is_pointer<T>::value) {
         // что нужно сделать тут, если тип T - сырой указатель
         delete p_value;
     } else {
         // что нужно сделать тут, если тип T - умный указатель указательz
-        p_value.reset();
-        assert(!p_value);
+        p_value.reset(); //операция сброса умного указателя
+        assert(!p_value);//проверяем, явлеяется ли пустым указателем 
     }
 }
 
@@ -35,7 +35,6 @@ struct DeleterString
     // самостоятельно реализовать недостающие детали класса
     void operator()(std::string* str_ptr) {
         std::cout << *str_ptr << std::endl;
-        delete str_ptr;
     }
 };
 
@@ -135,11 +134,9 @@ FileRaiiWrapper frw("test_read.txt");
 
     // во время удаления строки вывести её в cout
     // std::string* string_to_cout = new std::string{"cout this string when delete it"};
-    // std::unique_ptr<std::string*, DeleterStringPtr>(string_to_cout);
     std::unique_ptr<std::string, DeleterString> string_ptr(new std::string{"cout this string when delete it"});
     // во время удаления строки также вывести её в cout
     // std::string string_to_cout_too{"also cout this string when delete it"};
-    // std::unique_ptr<std::string, DeleterString>(string_to_cout_too);
     std::unique_ptr<std::string, DeleterStringPtr> string_ptr_too(new std::string{"also cout this string when delete it"});
 
     return 0;

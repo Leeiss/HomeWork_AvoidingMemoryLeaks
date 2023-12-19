@@ -16,19 +16,19 @@ public:
 // если файл не открылся, например его нет на диске, то нужно выбросить ошибку CannotOpenFileException
     FileRaiiWrapper(const std::string& name) {
         // реализации открытия файла и выброса ошибки тут
-        f = std::fopen(name.c_str(), "r");
+        f = std::fopen(name.c_str(), "r");//открываем файл для чтения
         if (f == nullptr) {
             throw CannotOpenFileException();
 
         }
     }
-    FileRaiiWrapper(const FileRaiiWrapper&) = delete;
-    FileRaiiWrapper& operator = (const FileRaiiWrapper&) = delete;
+    FileRaiiWrapper(const FileRaiiWrapper&) = delete; //удаляем конструкор копирования
+    FileRaiiWrapper& operator = (const FileRaiiWrapper&) = delete; // удаляем конструктор присваивания
 
     // File&& — ссылка на временный объект
     // забираем владение дескриптором у временного объекта other
     // Конструктор перемещения
-    FileRaiiWrapper(FileRaiiWrapper&& other) noexcept {
+    FileRaiiWrapper(FileRaiiWrapper&& other) noexcept { 
         // реализация перемещения тут
         f = nullptr;
         std::swap(f, other.f);
@@ -38,7 +38,7 @@ public:
     FileRaiiWrapper& operator=(FileRaiiWrapper&& other) noexcept {
         // реализация перемещения тут
         if (this != &other) {
-            if (f) std::fclose(f);
+            if (f) std::fclose(f);//если f - не нулевой указатель, то есть файл уже открыт, для очистки
             f = nullptr;
             std::swap(f, other.f);
         }
@@ -51,13 +51,12 @@ public:
     }
     // функция для чтения строки длинной bytes_count из файла
     std::string ReadBytes(const size_t bytes_count) const {
-        if (f) {
-            std::fclose(f);
+        if (!f) {
             return ""; 
-        } else {
-        std::unique_ptr<char[]> buf(new char[bytes_count + 1]{});
-        std::ignore = std::fread(buf.get(), 1, bytes_count, f);
-        return std::string(buf.get());
-        }
+        } 
+        std::unique_ptr<char[]> buf(new char[bytes_count]{}); //класс для динамическо выделенной памяти 
+        size_t bytesRead = std::fread(buf.get(), 1, bytes_count, f);//считываем в буфер
+        std::fclose(f);
+        return std::string(buf.get(), bytesRead);
     }
 };
